@@ -2,22 +2,25 @@ export default class Customizator {
 	constructor() {
 		this.btnBlock = document.createElement('div')
 		this.colorPicker = document.createElement('input')
+		this.clear = document.createElement('div')
+		this.scale = localStorage.getItem('scale') || 1
+		this.color = localStorage.getItem('color') || '#ffffff'
 
 		this.btnBlock.addEventListener('click', event => this.onScaleChange(event))
 		this.colorPicker.addEventListener('input', event =>
 			this.onColorChange(event)
 		)
+		this.clear.addEventListener('click', () => this.reset())
 	}
 
 	onScaleChange(event) {
-		let scale
 		const body = document.querySelector('body')
 
-		if (event.target.value) {
-			scale = +event.target.value.replace(/x/g, '')
+		if (event) {
+			this.scale = +event.target.value.replace(/x/g, '')
 		}
 
-		function recursy(element) {
+		const recursy = element => {
 			element.childNodes.forEach(node => {
 				if (
 					node.nodeName === '#text' &&
@@ -27,10 +30,10 @@ export default class Customizator {
 						let value = window.getComputedStyle(node.parentNode, null).fontSize
 						node.parentNode.setAttribute('data-fz', +value.replace(/px/g, ''))
 						node.parentNode.style.fontSize =
-							node.parentNode.getAttribute('data-fz') * scale + 'px'
+							node.parentNode.getAttribute('data-fz') * this.scale + 'px'
 					} else {
 						node.parentNode.style.fontSize =
-							node.parentNode.getAttribute('data-fz') * scale + 'px'
+							node.parentNode.getAttribute('data-fz') * this.scale + 'px'
 					}
 				} else {
 					recursy(node)
@@ -40,13 +43,19 @@ export default class Customizator {
 
 		recursy(body)
 
-		console.log(scale)
+		localStorage.setItem('scale', this.scale)
 	}
 
 	onColorChange(event) {
 		const body = document.querySelector('body')
 		body.style.backgroundColor = event.target.value
-		console.log(event.target.value)
+		localStorage.setItem('color', event.target.value)
+	}
+
+	setBgColor() {
+		const body = document.querySelector('body')
+		body.style.backgroundColor = this.color
+		this.colorPicker.value = this.color
 	}
 
 	injectStyle() {
@@ -86,19 +95,35 @@ export default class Customizator {
 				width: 40px;
 				height: 40px;
 			}
+
+			.clear {
+				font-size: 20px;
+				cursor: pointer;
+			}
 		`
 		document.querySelector('head').appendChild(style)
 	}
 
-	render() {
+	reset() {
+		localStorage.clear()
+		this.scale = 1
+		this.color = '#ffffff'
+		this.setBgColor()
+		this.onScaleChange()
+	}
 
+	render() {
 		this.injectStyle()
+		this.setBgColor()
+		this.onScaleChange()
 
 		let scaleInputS = document.createElement('input')
 		let scaleInputM = document.createElement('input')
 		let panel = document.createElement('div')
 
-		panel.append(this.btnBlock, this.colorPicker)
+		panel.append(this.btnBlock, this.colorPicker, this.clear)
+		this.clear.innerHTML = '&times;'
+		this.clear.classList.add('clear')
 
 		scaleInputS.classList.add('scale_btn')
 		scaleInputM.classList.add('scale_btn')
