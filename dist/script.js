@@ -2235,8 +2235,16 @@ var Customizator = /*#__PURE__*/function () {
       console.log(event.target.value);
     }
   }, {
+    key: "injectStyle",
+    value: function injectStyle() {
+      var style = document.createElement('style');
+      style.innerHTML = "\n\t\t\t.panel {\n\t\t\t\tdisplay: flex;\n\t\t\t\tjustify-content: space-around;\n\t\t\t\talign-items: center;\n\t\t\t\tposition: fixed;\n\t\t\t\ttop: 10px;\n\t\t\t\tright: 0;\n\t\t\t\tborder: 1px solid rgba(0, 0, 0, 0.2);\n\t\t\t\tbox-shadow: 0 0 20px rgba(0, 0, 0, 0.5);\n\t\t\t\twidth: 300px;\n\t\t\t\theight: 60px;\n\t\t\t\tbackground-color: #fff;\n\t\t\t}\n\n\t\t\t.scale {\n\t\t\t\tdisplay: flex;\n\t\t\t\tjustify-content: space-around;\n\t\t\t\talign-items: center;\n\t\t\t\twidth: 100px;\n\t\t\t\theight: 40px;\n\t\t\t}\n\t\t\t.scale_btn {\n\t\t\t\tdisplay: block;\n\t\t\t\twidth: 40px;\n\t\t\t\theight: 40px;\n\t\t\t\tborder: 1px solid rgba(0, 0, 0, 0.2);\n\t\t\t\tborder-radius: 4px;\n\t\t\t\tfont-size: 18px;\n\t\t\t}\n\n\t\t\t.color {\n\t\t\t\twidth: 40px;\n\t\t\t\theight: 40px;\n\t\t\t}\n\t\t";
+      document.querySelector('head').appendChild(style);
+    }
+  }, {
     key: "render",
     value: function render() {
+      this.injectStyle();
       var scaleInputS = document.createElement('input');
       var scaleInputM = document.createElement('input');
       var panel = document.createElement('div');
